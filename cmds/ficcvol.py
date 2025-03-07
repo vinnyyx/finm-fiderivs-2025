@@ -4,13 +4,13 @@ from scipy.optimize import fsolve
 from scipy.stats import norm
 
 
-def cap_vol_to_price(flatvol, strike, fwds, discounts, dt=.25, notional=100):
+def cap_vol_to_price(flatvol, strike, fwds, discounts, dt=.25, notional=100, isPayer=True):
     T = discounts.index[-1]
     flatvalues = pd.Series(dtype=float, index=discounts.index, name='flat values')
     
     tprev = discounts.index[0]
     for t in discounts.index[1:]:
-        flatvalues.loc[t] = notional * dt * blacks_formula(tprev, flatvol, strike, fwds.loc[t], discounts.loc[t])
+        flatvalues.loc[t] = notional * dt * blacks_formula(tprev, flatvol, strike, fwds.loc[t], discounts.loc[t],isCall=isPayer)
         tprev = t
         
     capvalue = flatvalues.sum()        
